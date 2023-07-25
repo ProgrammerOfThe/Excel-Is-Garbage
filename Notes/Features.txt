@@ -1,0 +1,11 @@
+Unknown, Monday July 24th 2023.
+8:44 pm.
+
+Current Features:
+
+  * Editor(You can now make data and store it in files, and read the data)
+
+Future Features:
+
+  * Math Arithmetic(Adding, Subtracting, Multiplication, All the stuff excel can do just on a lower scale).
+  *

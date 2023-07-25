@@ -7,12 +7,12 @@
 
 std::string getFileContents (std::ifstream&);            //Gets file contents
 
-int code()
+int FileReader()
 {
-    std::string fileName;
+    std::string fileName = "Bexcel-Save-File.txt";
 
-    std::cout << "FileName: ";
-    std::cin >> fileName;
+    //std::cout << "FileName: ";
+    // std::cin >> fileName;
 
     std::ifstream Reader (fileName);             //Open file
 
@@ -26,7 +26,7 @@ int code()
 }
 
 std::string getFileContents (std::ifstream& File){
-  std::string Lines = "";        //All lines
+std::string Lines = "";        //All lines
     
   if (File){  
     while (File.good ()){
@@ -35,12 +35,11 @@ std::string getFileContents (std::ifstream& File){
 	    TempLine += "\n";                      //Add newline character
 	    
 	    Lines += TempLine;                     //Add newline
-  }
-	return Lines;
-  }
-    else{
-    return "ERROR File does not exist.";
     }
+    return Lines;
+  }else{
+    return "ERROR File does not exist.";
+  }
 
     return 0;
 }
