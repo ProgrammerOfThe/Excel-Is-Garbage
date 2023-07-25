@@ -1,6 +1,14 @@
 /*
 We can make a array that represent a cell and and each cell can contain a value, to tell if a cell is empty we have 0 represent a empty cell.
 
+TODO
+  :: We check if a save file is there if their is not then we allow the user to put in data else we can load the file
+BUG
+  :: 
+
+Fixed:
+  :: If i would give a large number in put to edit the cells it would crash(Fixed).
+    - We used wcin, which can hold more values then the norm cin.
 */
 
 #pragma once
@@ -9,9 +17,17 @@ We can make a array that represent a cell and and each cell can contain a value,
 #include <cstdlib>
 #include <algorithm>
 #include <fstream>
+#include <stdexcept>
+
+// Header Files
+#include "File-Reader.hpp"
 
 #define FULL_CELLS 101
+#define INVALID_INPUT 404
+#define FILE_NOT_THERE 991
+
 bool saveCells;
+bool fileThere;
 
 void autofill(int (&array)[5]){
   
@@ -20,77 +36,52 @@ void autofill(int (&array)[5]){
   } 
 }
 
-void EditCells(){
-  
-  int cell0; 
-  int cell1; 
-  int cell2; 
-  int cell3; 
-  int cell4; 
-  int array[5]; 
-  int CellsSize = sizeof(array) / sizeof(int);
-  
-  std::string save;  
+void LengthChecker(int input){
+
+  if (std::to_string(input).length() >= 9){
+    throw std::length_error("You reached maxed length in this buffer");
+  }else{
     
-  std::cout << "Cell 0: ";
-  std::cin >> cell0;
-          
-  array[0] = cell0;
-
-  std::cout << "Cell 1: ";
-  std::cin >> cell1;
-
-  array[1] = cell1;
-
-  std::cout << "Index 2: ";
-  std::cin >> cell2;
-
-  array[2] = cell2;
-
-  std::cout << "Index 3: ";
-  std::cin >> cell3;
-
-  array[3] = cell3;
-
-  std::cout << "Index 4: ";
-  std::cin >> cell4;
-
-  array[4] = cell4;
-
-  std::cout << "Save: ";
-  std::cin >> save;
-
-  if (save == "yes"){
-    std::fstream file;
-    file.open("Bexcel-Save-File.txt", std::ios::out);
-    file << array[0] << '\n';
-    file << array[1] << '\n';
-    file << array[2] << '\n';
-    file << array[3] << '\n';
-    file << array[4] << '\n';
-    file << "Total Cells: " << CellsSize << '\n';
-    file.close();
-    save = true;    
-  }else if (save == "no"){
-    saveCells = false;
-  }
+  }  
+  
 }
+
 namespace Cell{
-  int main(){
-    std::ifstream FileChecker("Bexcel-Save-File");
-        
-    std::string input;
-    std::string editCells;
+  inline int main(){
+    int cell0;
+    int cell1; 
+    int cell2; 
+    int cell3; 
+    int cell4;  
     
-    int cellsBoxes[5] = {11,1,1,1,1,};
+    std::string save;    
+    char CellsRE;
+    std::ifstream FileChecker("Bexcel-Save-File.txt");
     
+    int cellsBoxes[5] = {0,0,0,0,0};
     int CellsSize = sizeof(cellsBoxes) / sizeof(int);
+    
+    if(!FileChecker){
+      fileThere = false;
+      return FILE_NOT_THERE;
+    }else{
+      FileChecker >> cellsBoxes[0];
+      FileChecker >> cellsBoxes[1];
+      FileChecker >> cellsBoxes[2];
+      FileChecker >> cellsBoxes[3];
+      FileChecker >> cellsBoxes[4];
+      fileThere = true;
+    }
+    std::string input;
+        
     
     Start:
     
     if(cellsBoxes[0] == 0 && cellsBoxes[1] == 0 && cellsBoxes[2] == 0 && cellsBoxes[3] == 0 && cellsBoxes[4] == 0){
-        std::cout << "Do you wish to auto fill them with test data: ";
-        std::cin >> input;
+      std::cout << "The Cells are empty \n";
+        
+      std::cout << "Do you wish to auto fill them with test data: ";
+      std::cin >> input;
 
       if(input == "yes"){
         
@@ -114,25 +105,149 @@ namespace Cell{
         file.close();      
         
       }else if (input == "no"){
-        EditCells();                    
-      
+        //EditCells();                    
+        std::cout << "Cell 0: ";
+        std::wcin >> cell0;
+        
+        LengthChecker(cell0);
+        
+        cellsBoxes[0] = cell0;
+
+        std::cout << "Cell 1: ";
+        std::wcin >> cell1;
+        
+        LengthChecker(cell1);         
+        
+        std::cin.ignore();
+        cellsBoxes[1] = cell1;
+                
+        
+        std::cout << "Cell 2: ";
+        std::wcin >> cell2;
+        LengthChecker(cell2);
+        
+        std::cin.ignore();
+        cellsBoxes[2] = cell2;
+        
+        std::cout << "Index 3: ";
+        std::wcin >> cell3;
+
+        LengthChecker(cell3);
+        
+        std::cin.ignore();
+        cellsBoxes[3] = cell3;
+
+        std::cout << "Index 4: ";
+        std::wcin >> cell4;
+        
+        LengthChecker(cell4);
+
+        std::cin.ignore();
+        cellsBoxes[4] = cell4;
+        
+                
+        
+        std::cout << "Save: ";
+        std::cin >> save;
+
+        if (save == "yes"){
+          std::fstream file;
+          file.open("Bexcel-Save-File.txt", std::ios::out);
+          file << cellsBoxes[0] << '\n';
+          file << cellsBoxes[1] << '\n';
+          file << cellsBoxes[2] << '\n';
+          file << cellsBoxes[3] << '\n';
+          file << cellsBoxes[4] << '\n';
+          file << "Total Cells: " << CellsSize << '\n';
+          file.close();
+          save = true;
+              
+        }else if (save == "no"){
+          saveCells = false;
+        }
       }else{
         throw std::invalid_argument("Invalid Input Error!");
+      
       }
            
     }else{
 
+      std::cout << "Contents in the Cells are: \n";
       for(int i = 0; i < CellsSize; i++){
         std::cout << cellsBoxes[i] << '\n';
-        
-        std::cout << "Do you wish to edit the cells: ";
-        std::cin >> editCells;
+      }  
+      
+      std::cout << "Do you wish to edit the cells(type C), or read the data in the Cells(Type R): ";
+      std::cin >> CellsRE;
 
-        if(editCells == "yes"){
-          EditCells();
-        }
+      if(CellsRE == 'C' || CellsRE == 'c'){
+ 
+        
+        std::cout << "Cell 0: ";
+        std::wcin >> cell0;
+        LengthChecker(cell0); 
+
+        cellsBoxes[0] = cell0;
+
+        std::cout << "Cell 1: ";
+        std::wcin >> cell1;
+        LengthChecker(cell1); 
+
+        std::cin.ignore();
+        cellsBoxes[1] = cell1;
+          
+        
+        std::cout << "Cell 2: ";
+        std::wcin >> cell2;
+        LengthChecker(cell2);
+        
+        std::cin.ignore();
+        cellsBoxes[2] = cell2;
+        
+        
+        std::cout << "Index 3: ";
+        std::wcin >> cell3;
+
+        LengthChecker(cell3);
+        
+        std::cin.ignore();
+        cellsBoxes[3] = cell3;
+
+        std::cout << "Index 4: ";
+        std::wcin >> cell4;
+
+        LengthChecker(cell4);
+
+        std::cin.ignore();
+        cellsBoxes[4] = cell4;
+        
+                
+        
+        std::cout << "Save: ";
+        std::cin >> save;
+
+        if (save == "yes"){
+          std::fstream file;
+          file.open("Bexcel-Save-File.txt", std::ios::out);
+          file << cellsBoxes[0] << '\n';
+          file << cellsBoxes[1] << '\n';
+          file << cellsBoxes[2] << '\n';
+          file << cellsBoxes[3] << '\n';
+          file << cellsBoxes[4] << '\n';
+          file << "Total Cells: " << CellsSize << '\n';
+          file.close();
+          save = true;
               
+        }else if (save == "no"){
+          saveCells = false;
+        }
+               
+        goto Start;
+      }else if (CellsRE == 'R' || CellsRE == 'r'){
+        FileReader();          
       }
+              
+      
       return FULL_CELLS;
     }
      
