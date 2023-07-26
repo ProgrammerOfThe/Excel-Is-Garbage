@@ -62,6 +62,10 @@ namespace Cell{
     int CellsSize = sizeof(cellsBoxes) / sizeof(int);
     
     if(!FileChecker){
+      std::ofstream MakeFile("Bexcel-Save-File.txt");
+      MakeFile.close();
+
+      throw std::runtime_error("File is not there, please restart the program so the file can be made.");
       fileThere = false;
       return FILE_NOT_THERE;
     }else{
@@ -171,12 +175,7 @@ namespace Cell{
       }
            
     }else{
-
-      std::cout << "Contents in the Cells are: \n";
-      for(int i = 0; i < CellsSize; i++){
-        std::cout << cellsBoxes[i] << '\n';
-      }  
-      
+            
       std::cout << "Do you wish to edit the cells(type C), or read the data in the Cells(Type R): ";
       std::cin >> CellsRE;
 
